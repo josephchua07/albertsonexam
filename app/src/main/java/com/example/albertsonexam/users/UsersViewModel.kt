@@ -1,5 +1,6 @@
 package com.example.albertsonexam.users
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -22,13 +23,13 @@ class UsersViewModel @Inject constructor(
     val error: LiveData<String> get() = _error
 
     init {
-        fetchUsers(10)
+        fetchUsers()
     }
 
-    private fun fetchUsers(count: Int) {
+    private fun fetchUsers() {
         viewModelScope.launch {
             try {
-                _users.value = userRepository.getUsers(count)
+                _users.value = userRepository.getUsers(1)
             } catch (e: Exception) {
                 _error.value = e.message ?: "Unknown error"
             }
