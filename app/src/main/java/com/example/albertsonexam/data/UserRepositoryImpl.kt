@@ -1,7 +1,7 @@
 package com.example.albertsonexam.data
 
 import com.example.albertsonexam.data.source.RandomUserService
-import com.example.albertsonexam.data.source.UserResponse
+import com.example.albertsonexam.data.models.UserResponse
 import javax.inject.Inject
 
 class UserRepositoryImpl @Inject constructor(private val service: RandomUserService) : UserRepository {

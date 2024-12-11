@@ -1,6 +1,6 @@
 package com.example.albertsonexam.data
 
-import com.example.albertsonexam.data.source.UserResponse
+import com.example.albertsonexam.data.models.UserResponse
 
 interface UserRepository {
 

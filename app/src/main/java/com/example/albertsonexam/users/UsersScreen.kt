@@ -31,13 +31,13 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.example.albertsonexam.R
-import com.example.albertsonexam.data.source.CoordinatesResponse
-import com.example.albertsonexam.data.source.LocationResponse
-import com.example.albertsonexam.data.source.NameResponse
-import com.example.albertsonexam.data.source.PictureResponse
-import com.example.albertsonexam.data.source.StreetResponse
-import com.example.albertsonexam.data.source.TimezoneResponse
-import com.example.albertsonexam.data.source.UserResponse
+import com.example.albertsonexam.data.models.CoordinatesResponse
+import com.example.albertsonexam.data.models.LocationResponse
+import com.example.albertsonexam.data.models.NameResponse
+import com.example.albertsonexam.data.models.PictureResponse
+import com.example.albertsonexam.data.models.StreetResponse
+import com.example.albertsonexam.data.models.TimezoneResponse
+import com.example.albertsonexam.data.models.UserResponse
 import com.example.albertsonexam.ui.theme.AlbertsonexamTheme
 
 @Composable

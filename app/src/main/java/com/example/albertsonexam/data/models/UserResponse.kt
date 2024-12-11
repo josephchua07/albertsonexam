@@ -1,4 +1,4 @@
-package com.example.albertsonexam.data.source
+package com.example.albertsonexam.data.models
 
 
 data class UserResponse(

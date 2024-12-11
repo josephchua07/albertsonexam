@@ -3,7 +3,7 @@ package com.example.albertsonexam.users
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.albertsonexam.data.UserRepository
-import com.example.albertsonexam.data.source.UserResponse
+import com.example.albertsonexam.data.models.UserResponse
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
