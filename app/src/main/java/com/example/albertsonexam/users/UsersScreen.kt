@@ -1,5 +1,6 @@
 package com.example.albertsonexam.users
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -62,7 +63,8 @@ fun UsersScreen(
             } else {
                 UsersList(
                     modifier,
-                    uiState.value.users
+                    uiState.value.users,
+                    onUserClick
                 )
             }
         }
@@ -74,12 +76,13 @@ fun UsersScreen(
 @Composable
 fun UsersList(
     modifier: Modifier = Modifier,
-    users: List<UserResponse>
+    users: List<UserResponse>,
+    onUserClick: (UserResponse) -> Unit
 ) {
 
     LazyColumn(modifier.fillMaxSize()) {
         items(users) { user ->
-            UserCard(user)
+            UserCard(user, onUserClick)
         }
     }
 
@@ -87,13 +90,15 @@ fun UsersList(
 
 @Composable
 fun UserCard(
-    user: UserResponse
+    user: UserResponse,
+    onClick: (UserResponse) -> Unit
 ) {
     Card(modifier = Modifier.padding(8.dp)) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(16.dp)
+                .clickable { onClick(user) }
         ) {
             AsyncImage(
                 model = ImageRequest.Builder(LocalContext.current)
@@ -141,6 +146,6 @@ private fun UserScreenPreview() {
                     )
                 )
             )
-        )
+        ) { }
     }
 }
