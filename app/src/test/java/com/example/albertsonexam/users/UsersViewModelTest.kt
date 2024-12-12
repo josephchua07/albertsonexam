@@ -48,6 +48,8 @@ class UsersViewModelTest {
 
         viewModel.validateInput(5001)
         assertEquals(UsersViewModel.INPUT_1_TO_5000, viewModel.uiState.value.errorMessage)
+
+        coVerify(exactly = 0) { userRepository.getUsers(any()) }
     }
 
     @Test
