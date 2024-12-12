@@ -1,5 +1,7 @@
 package com.example.albertsonexam.users
 
+import androidx.compose.runtime.State
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.albertsonexam.data.UserRepository
@@ -18,6 +20,9 @@ class UsersViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(UsersUiState())
     val uiState: StateFlow<UsersUiState> = _uiState
 
+    private val _selectedUser = mutableStateOf<UserResponse?>(null)
+    val selectedUser: State<UserResponse?> = _selectedUser
+
     private var hasFetchedUsers = false
 
     fun fetchUsers(count: Int = 100) {
@@ -33,6 +38,10 @@ class UsersViewModel @Inject constructor(
                 }
             }
         }
+    }
+
+    fun selectUser(user: UserResponse) {
+        _selectedUser.value = user
     }
 
 }

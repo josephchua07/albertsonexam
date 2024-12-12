@@ -18,8 +18,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -46,7 +44,7 @@ import com.example.albertsonexam.ui.theme.AlbertsonexamTheme
 fun UsersScreen(
     modifier: Modifier = Modifier,
     viewModel: UsersViewModel = hiltViewModel(),
-    onUserClick: (UserResponse) -> Unit
+    onUserClick: () -> Unit
 ) {
 
     Scaffold(modifier = modifier.fillMaxSize()) { paddingValues ->
@@ -57,17 +55,28 @@ fun UsersScreen(
             viewModel.fetchUsers()
         }
 
-        Box(modifier.fillMaxSize().padding(paddingValues)) {
+        Box(
+            modifier
+                .fillMaxSize()
+                .padding(paddingValues)) {
             if (uiState.value.isLoading) {
                 CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
             } else if (uiState.value.errorMessage != null) {
-                Text(text = uiState.value.errorMessage ?: "Unknown error", color = Color.Red, modifier = Modifier.align(Alignment.Center).padding(16.dp))
+                Text(
+                    text = uiState.value.errorMessage ?: "Unknown error",
+                    color = Color.Red,
+                    modifier = Modifier
+                        .align(Alignment.Center)
+                        .padding(16.dp)
+                )
             } else {
                 UsersList(
                     modifier,
                     uiState.value.users,
-                    onUserClick
-                )
+                ) { user ->
+                    viewModel.selectUser(user)
+                    onUserClick()
+                }
             }
         }
 
