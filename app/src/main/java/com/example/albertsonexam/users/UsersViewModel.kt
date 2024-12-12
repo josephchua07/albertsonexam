@@ -1,5 +1,6 @@
 package com.example.albertsonexam.users
 
+import android.accounts.NetworkErrorException
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
@@ -33,8 +34,10 @@ class UsersViewModel @Inject constructor(
                     val result = userRepository.getUsers(count)
                     _uiState.value = _uiState.value.copy(users = result, isLoading = false)
                     hasFetchedUsers = true
+                } catch (e: NetworkErrorException) {
+                    _uiState.value = _uiState.value.copy(isLoading = false, errorMessage = e.message ?: NETWORK_ERROR)
                 } catch (e: Exception) {
-                    _uiState.value = _uiState.value.copy(isLoading = false, errorMessage = e.message)
+                    _uiState.value = _uiState.value.copy(isLoading = false, errorMessage = e.message ?: UNKNOWN_ERROR)
                 }
             }
         }
@@ -42,6 +45,11 @@ class UsersViewModel @Inject constructor(
 
     fun selectUser(user: UserResponse) {
         _selectedUser.value = user
+    }
+
+    companion object {
+        const val NETWORK_ERROR = "Network error"
+        const val UNKNOWN_ERROR = "Unknown error"
     }
 
 }
