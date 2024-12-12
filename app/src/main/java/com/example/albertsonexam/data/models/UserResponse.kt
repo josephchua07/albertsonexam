@@ -3,11 +3,14 @@ package com.example.albertsonexam.data.models
 
 data class UserResponse(
     val name: NameResponse,
+    val gender: String,
     val location: LocationResponse,
+    val email: String,
     val picture: PictureResponse,
 )
 
 data class NameResponse(
+    val title: String,
     val first: String,
     val last: String
 )

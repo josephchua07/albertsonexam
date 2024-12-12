@@ -140,7 +140,9 @@ private fun UserScreenPreview() {
         UsersList(
             users = listOf(
                 UserResponse(
-                    name = NameResponse("John", "Doe"),
+                    name = NameResponse("Mr.", "John", "Doe"),
+                    gender = "Male",
+                    email = "j.doe@sample.com",
                     location = LocationResponse(
                         street = StreetResponse(123, "Main St"),
                         city = "Paranaque",
