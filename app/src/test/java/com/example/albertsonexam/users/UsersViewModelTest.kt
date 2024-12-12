@@ -50,6 +50,22 @@ class UsersViewModelTest {
     }
 
     @Test
+    fun `selectUser should update selectedUser`() {
+        viewModel.selectUser(expectedUsers[0])
+        assertEquals(expectedUsers[0], viewModel.selectedUser.value)
+    }
+
+    @Test
+    fun `fetchUser will only call repository once if already fetched`() {
+        coEvery { userRepository.getUsers(expectedNumberOfResults) } returns expectedUsers
+
+        viewModel.fetchUsers(expectedNumberOfResults)
+        viewModel.fetchUsers(expectedNumberOfResults)
+
+        coVerify(exactly = 1) { userRepository.getUsers(expectedNumberOfResults) }
+    }
+
+    @Test
     fun `fetchUsers should handle network error and update uiState`() = runTest {
 
         coEvery { userRepository.getUsers(any()) } throws NetworkErrorException()
