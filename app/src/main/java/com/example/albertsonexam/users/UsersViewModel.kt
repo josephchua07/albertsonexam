@@ -56,6 +56,12 @@ class UsersViewModel @Inject constructor(
         }
     }
 
+    fun resetUIState() {
+        _uiState.value = UsersUiState()
+        _selectedUser.value = null
+        hasFetchedUsers = false
+    }
+
     companion object {
         const val NETWORK_ERROR = "Network error"
         const val UNKNOWN_ERROR = "Unknown error"

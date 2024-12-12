@@ -1,5 +1,6 @@
 package com.example.albertsonexam.users
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -59,6 +60,10 @@ fun UsersScreen(
 
         val uiState = viewModel.uiState.collectAsStateWithLifecycle()
         var inputText by remember { mutableStateOf("") }
+
+        BackHandler {
+            viewModel.resetUIState()
+        }
 
         Box(
             modifier

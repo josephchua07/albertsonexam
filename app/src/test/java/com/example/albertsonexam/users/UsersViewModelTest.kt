@@ -78,6 +78,19 @@ class UsersViewModelTest {
     }
 
     @Test
+    fun `resetUIState should reset uiState and hasFetchedUsers`() {
+        coEvery { userRepository.getUsers(expectedNumberOfResults) } returns expectedUsers
+        viewModel.validateInput(expectedNumberOfResults)
+
+        viewModel.resetUIState()
+        assertEquals(emptyList<UserResponse>(), viewModel.uiState.value.users)
+        assertEquals(false, viewModel.uiState.value.isLoading)
+        assertEquals(null, viewModel.uiState.value.errorMessage)
+        assertEquals(true, viewModel.uiState.value.showInput)
+        assertEquals(null, viewModel.selectedUser.value)
+    }
+
+    @Test
     fun `fetchUsers should handle network error and update uiState`() = runTest {
 
         coEvery { userRepository.getUsers(any()) } throws NetworkErrorException()
