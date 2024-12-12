@@ -7,23 +7,31 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -50,26 +58,28 @@ fun UsersScreen(
     Scaffold(modifier = modifier.fillMaxSize()) { paddingValues ->
 
         val uiState = viewModel.uiState.collectAsStateWithLifecycle()
-
-        LaunchedEffect(Unit) {
-            viewModel.fetchUsers()
-        }
+        var inputText by remember { mutableStateOf("") }
 
         Box(
             modifier
                 .fillMaxSize()
-                .padding(paddingValues)) {
+                .padding(paddingValues)
+        ) {
             if (uiState.value.isLoading) {
                 CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
-            } else if (uiState.value.errorMessage != null) {
+            }
+
+            if (uiState.value.errorMessage != null) {
                 Text(
                     text = uiState.value.errorMessage ?: "Unknown error",
                     color = Color.Red,
                     modifier = Modifier
-                        .align(Alignment.Center)
+                        .align(Alignment.BottomCenter)
                         .padding(16.dp)
                 )
-            } else {
+            }
+
+            if (uiState.value.users.isEmpty().not()) {
                 UsersList(
                     modifier,
                     uiState.value.users,
@@ -77,11 +87,33 @@ fun UsersScreen(
                     viewModel.selectUser(user)
                     onUserClick()
                 }
+            } else if (uiState.value.showInput && uiState.value.users.isEmpty()) {
+                Column(
+                    Modifier.align(Alignment.Center),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    OutlinedTextField(
+                        value = inputText,
+                        onValueChange = { newText ->
+                            inputText = newText.filter { it.isDigit() }
+                        },
+                        label = { Text("Enter desired number of results (1 - 5000)") },
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                    Spacer(modifier = Modifier.height(16.dp))
+                    Button(
+                        onClick = {
+                            viewModel.validateInput(inputText.toIntOrNull() ?: 0)
+                        },
+                        enabled = inputText.isNotBlank()
+                    ) {
+                        Text("Fetch Users")
+                    }
+                }
             }
         }
-
     }
-
 }
 
 @Composable
@@ -90,13 +122,11 @@ fun UsersList(
     users: List<UserResponse>,
     onUserClick: (UserResponse) -> Unit
 ) {
-
     LazyColumn(modifier.fillMaxSize()) {
         items(users) { user ->
             UserCard(user, onUserClick)
         }
     }
-
 }
 
 @Composable

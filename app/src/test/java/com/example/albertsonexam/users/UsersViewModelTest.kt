@@ -37,16 +37,26 @@ class UsersViewModelTest {
     }
 
     @Test
-    fun `fetchUsers should call getUsers from repository and update uiState`() = runTest {
+    fun `show input by default`() = runTest {
+        assertEquals(true, viewModel.uiState.value.showInput)
+    }
 
+    @Test
+    fun `validate user input is between 1 and 5000`() = runTest {
+        viewModel.validateInput(0)
+        assertEquals(UsersViewModel.INPUT_1_TO_5000, viewModel.uiState.value.errorMessage)
+
+        viewModel.validateInput(5001)
+        assertEquals(UsersViewModel.INPUT_1_TO_5000, viewModel.uiState.value.errorMessage)
+    }
+
+    @Test
+    fun `valid user input should fetch users`() = runTest {
         coEvery { userRepository.getUsers(expectedNumberOfResults) } returns expectedUsers
 
-        viewModel.fetchUsers(expectedNumberOfResults)
-
+        viewModel.validateInput(1)
         coVerify { userRepository.getUsers(expectedNumberOfResults) }
-
         assertEquals(expectedUsers, viewModel.uiState.value.users)
-
     }
 
     @Test

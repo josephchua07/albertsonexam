@@ -26,18 +26,18 @@ class UsersViewModel @Inject constructor(
 
     private var hasFetchedUsers = false
 
-    fun fetchUsers(count: Int = 100) {
+    fun fetchUsers(count: Int) {
         if (!hasFetchedUsers) {
-            _uiState.value = _uiState.value.copy(isLoading = true)
+            _uiState.value = _uiState.value.copy(isLoading = true, showInput = false)
             viewModelScope.launch {
                 try {
                     val result = userRepository.getUsers(count)
                     _uiState.value = _uiState.value.copy(users = result, isLoading = false)
                     hasFetchedUsers = true
                 } catch (e: NetworkErrorException) {
-                    _uiState.value = _uiState.value.copy(isLoading = false, errorMessage = e.message ?: NETWORK_ERROR)
+                    _uiState.value = _uiState.value.copy(isLoading = false, showInput = true, errorMessage = e.message ?: NETWORK_ERROR)
                 } catch (e: Exception) {
-                    _uiState.value = _uiState.value.copy(isLoading = false, errorMessage = e.message ?: UNKNOWN_ERROR)
+                    _uiState.value = _uiState.value.copy(isLoading = false, showInput = true, errorMessage = e.message ?: UNKNOWN_ERROR)
                 }
             }
         }
@@ -47,9 +47,19 @@ class UsersViewModel @Inject constructor(
         _selectedUser.value = user
     }
 
+    fun validateInput(count: Int) {
+        if (count in 1..5000) {
+            _uiState.value = _uiState.value.copy(errorMessage = null)
+            fetchUsers(count)
+        } else {
+            _uiState.value = _uiState.value.copy(errorMessage = INPUT_1_TO_5000)
+        }
+    }
+
     companion object {
         const val NETWORK_ERROR = "Network error"
         const val UNKNOWN_ERROR = "Unknown error"
+        const val INPUT_1_TO_5000 = "Enter a number between 1 and 5000"
     }
 
 }
@@ -57,5 +67,6 @@ class UsersViewModel @Inject constructor(
 data class UsersUiState(
     val users: List<UserResponse> = emptyList(),
     val isLoading: Boolean = false,
-    val errorMessage: String? = null
+    val errorMessage: String? = null,
+    val showInput: Boolean = true
 )
