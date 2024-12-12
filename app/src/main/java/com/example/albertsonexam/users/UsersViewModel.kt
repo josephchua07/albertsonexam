@@ -18,14 +18,19 @@ class UsersViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(UsersUiState())
     val uiState: StateFlow<UsersUiState> = _uiState
 
-    fun fetchUsers(count: Int = 10) {
-        _uiState.value = _uiState.value.copy(isLoading = true)
-        viewModelScope.launch {
-            try {
-                val result = userRepository.getUsers(count)
-                _uiState.value = _uiState.value.copy(users = result, isLoading = false)
-            } catch (e: Exception) {
-                _uiState.value = _uiState.value.copy(isLoading = false, errorMessage = e.message)
+    private var hasFetchedUsers = false
+
+    fun fetchUsers(count: Int = 100) {
+        if (!hasFetchedUsers) {
+            _uiState.value = _uiState.value.copy(isLoading = true)
+            viewModelScope.launch {
+                try {
+                    val result = userRepository.getUsers(count)
+                    _uiState.value = _uiState.value.copy(users = result, isLoading = false)
+                    hasFetchedUsers = true
+                } catch (e: Exception) {
+                    _uiState.value = _uiState.value.copy(isLoading = false, errorMessage = e.message)
+                }
             }
         }
     }
